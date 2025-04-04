@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from formulaire.models import DynamicForm
-from formulaire.serializers import DynamicFormSerializer
+from formulaire.serializers import DynamicFormSerializer, FormSubmissionSerializer
 
 class DynamicFormView(APIView):
     def get(self, request):
@@ -14,6 +14,14 @@ class DynamicFormView(APIView):
 
     def post(self, request):
         serializer = DynamicFormSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FormSubmissionView(APIView):
+    def post(self, request):
+        serializer = FormSubmissionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
