@@ -5,7 +5,10 @@ class DynamicForm(models.Model):
     fields = models.JSONField()
 
 class FormSubmission(models.Model):
-    form = models.ForeignKey(DynamicForm, on_delete=models.CASCADE)
+    form = models.ForeignKey(DynamicForm, on_delete=models.CASCADE, related_name='submissions')
     data = models.JSONField()
     submitted_at = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    received_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Submission for {self.form.name} at {self.submitted_at}"
